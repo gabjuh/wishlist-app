@@ -6,7 +6,7 @@ const Nav = ({
 }) => {
   return (
     <div className="bg-[#ddd] h-16 flex">
-      <div className="pt-4 pl-5 text-xl flex-grow">Geschenkkorb für Hannah</div>
+      <div className="pt-4 pl-5 text-xl flex-grow">Hannahs Geschenkkorb</div>
       {isAdminLoggedIn && <div className="pt-4 px-5 text-xl">
         <a href="#">Admin</a>
       </div>}
