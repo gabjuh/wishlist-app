@@ -44,15 +44,19 @@ const Product = ({
       </tr>
       <tr className="md:hidden flex gap-3 my-3">
         <div className="w-[40vw] bg-[#ddd3] rounded-lg py-10 px-3">
-          <img src={product.imageUrl} alt="Product Image" />
+          <a href={product.link} target="_blank">
+            <img src={product.imageUrl} alt="Product Image" />
+          </a>
         </div>
         <div className="w-[55vw]">
-          <h3 className="text-sm">{product.name}</h3>
+          <h3 className="text-sm text-blue-800 italic underline cursor-pointer">
+            <a href={product.link} target="_blank">{product.name}  &#x2197;</a>
+          </h3>
           <p className="text-xl">{product.price} €</p>
-          <p className="text-[.6rem] leading-1">(Der Preis kann je nach Aktion variieren.)</p>
+          <p className="text-[.7rem] text-red-700 leading-1">Der Preis kann je nach Aktion variieren.</p>
           <button
             onClick={() => toggleBought(product.id, product.isBought)}
-            className={`px-2 py-1 mt-3 w-full rounded-full ${
+            className={`px-2 py-1 mt-1.5 w-full rounded-full ${
               !product.isBought ? 'bg-green-500 text-white' : 'bg-gray-200'
             }`}
           >
