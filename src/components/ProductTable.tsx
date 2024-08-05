@@ -6,7 +6,7 @@ import Product from "./Product";
 
 const ProductTable= ({
   onEditHandler,
-  isAdminLoggedIn
+  isAdminLoggedIn,
 }: {
   onEditHandler: (id: string) => void;
   isAdminLoggedIn: boolean;
@@ -47,7 +47,7 @@ const ProductTable= ({
   };
 
   return (
-    <div className={`overflow-x-auto ${!isAdminLoggedIn ? 'mt-20' : ''}`}>
+    <div className={`${!isAdminLoggedIn ? 'mt-20' : ''}`}>
       <table className="lg:max-w-[1200px] w-full mx-auto bg-white">
         <thead className="bg-gray-100 hidden md:table-header-group">
           <tr>

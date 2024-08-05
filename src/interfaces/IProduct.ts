@@ -2,8 +2,8 @@ export interface IProduct {
   id: string;
   name: string;
   link: string;
-  price: number;
-  priceOld: number;
+  price: string;
+  priceCurrent: string;
   imageUrl: string;
   isBought: boolean;
 }

@@ -8,7 +8,7 @@ function App() {
 
   const [isProductFormActive, setIsProductFormActive] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<string | undefined>();
-  const isAdminLoggedIn = false;
+  const isAdminLoggedIn = true;
 
   const onClose = () => {
     setIsProductFormActive(false);
