@@ -1,0 +1,15 @@
+#letter {
+  p:first-of-type {
+    margin: 2rem 0;
+    font-size: 1.3rem;
+  }
+  p:last-of-type {
+    margin: 2rem 0 0 0;
+  }
+  p, li {
+    margin: .8rem 0;
+    line-height: 1.7rem;
+    /* text-align: justify; */
+  }
+  font-weight: 200;
+}

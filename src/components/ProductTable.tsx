@@ -4,7 +4,7 @@ import { db } from "../firebase";
 import { onValue, ref, remove, update } from "firebase/database";
 import Product from "./Product";
 
-const ProductTable= ({
+const ProductTable = ({
   onEditHandler,
   isAdminLoggedIn,
 }: {
@@ -12,6 +12,18 @@ const ProductTable= ({
   isAdminLoggedIn: boolean;
 }) => {
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [isAscendingSort, setIsAscendingSort] = useState<boolean>(false);
+  // const [isSorted, setIsSorted] = useState<boolean>(false);
+
+  const sortProducts = (productList: IProduct[]) => {
+    return [...productList].sort((a, b) => {
+      if (!isAscendingSort) {
+        return stringToNumber(a.priceCurrent) - stringToNumber(b.priceCurrent);
+      } else {
+        return stringToNumber(b.priceCurrent) - stringToNumber(a.priceCurrent);
+      }
+    })
+  }
 
   useEffect(() => {
     const productsRef = ref(db, 'products');
@@ -22,16 +34,37 @@ const ProductTable= ({
           id,
           ...(product as Omit<IProduct, 'id'>)
         }));
-        setProducts(productList);
+        setProducts(sortProducts(productList));
       } else {
         setProducts([]);
       }
     });
-  }, []);
+  }, [isAscendingSort]);
+
+  const sortProductsByPriceHandler = () => {
+    setIsAscendingSort(!isAscendingSort);
+    // setIsSorted(true);
+  };
+
+  const stringToNumber = (str: string | undefined): number => { 
+    let numericStr = str ?? '0';
+    numericStr = numericStr.replace(/\D/g, ''); 
+    return parseInt(numericStr); 
+  };
 
   const toggleBought = (productId: string, currentState: boolean) => {
-    const productRef = ref(db, `products/${productId}`);
-    update(productRef, { isBought: !currentState });
+    if (currentState) {
+      if (confirm('Hast du das Spielzeug versehentlich markiert und möchtest es wiederherstellen?\n\nFalls nicht, klicke auf "Abbrechen" und lass es bitte so, da es bereits von jemand anderem gekauft und markiert wurde. Vielen Dank! :-)')) {
+        const productRef = ref(db, `products/${productId}`);
+        update(productRef, { isBought: !currentState });
+      }
+      return;
+    }
+    if (confirm('Hast du das Spielzeug bereits gekauft?\n\nFalls noch nicht, klicke auf "Abbrechen", kaufe das gewünschte Spielzeug und kehre danach zurück, um es zu markieren! :-)')) {
+      alert('Vielen herzlichen Dank für das Geschenk!\n\nHannah wird sich sehr freuen! :-)');
+      const productRef = ref(db, `products/${productId}`);
+      update(productRef, { isBought: !currentState });
+    }
   };
 
   const removeProduct = async (productId: string) => { 
@@ -44,21 +77,22 @@ const ProductTable= ({
         console.error("Error removing product: ", error);
       }
     }
-  };
+  }; 
 
   return (
-    <div className={`${!isAdminLoggedIn ? 'mt-20' : ''}`}>
-      <table className="lg:max-w-[1200px] w-full mx-auto bg-white">
-        <thead className="bg-gray-100 hidden md:table-header-group">
+    <div className={`mt-0`}>
+      <button className="block md:hidden mx-auto my-5 text-md bg-gradient-to-b from-[#3f4a6b] to-[#384260] px-5 py-2 rounded-full text-[#ddd]" onClick={() => sortProductsByPriceHandler()}>Sortierung umkehren {!isAscendingSort ? '↓' : '↑'}</button>
+      <table className="lg:max-w-[1400px] w-full mx-auto hyphens-auto overflow-auto" lang="de">
+        <thead className="sticky top-[63px] bg-[#eee] hidden md:table-header-group z-[998]">
           <tr>
-            <th className="py-2 px-4 text-left">Bild</th>
-            <th className="py-2 px-4 text-left">Name des Produktes</th>
-            <th className="py-2 px-4 text-left">Preis</th>
-            <th className="py-2 px-4 text-left">Status</th>
+            <th className="py-2 px-4 text-center">Bild</th>
+            <th className="py-2 px-4 text-left">Beschreibung</th>
+            <th className="py-2 px-4 text-center cursor-pointer" onClick={() => sortProductsByPriceHandler()}>Preis {!isAscendingSort ? '↓' : '↑'}</th>
+            <th className="py-2 px-4 text-center">Status</th>
             {isAdminLoggedIn && <th className="py-2 px-4 text-left"></th>}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-opacity-0">
           {products.map((product: IProduct) => (
             <Product 
               key={product.id}
@@ -71,7 +105,6 @@ const ProductTable= ({
           ))}
         </tbody>
       </table>
-      <p className="mt-5 ml-3 text-[#ddd]">* Der Preis kann je nach Aktion variieren.</p>
     </div>
   );
 };

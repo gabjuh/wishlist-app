@@ -3,6 +3,8 @@ import ProductTable from './components/ProductTable';
 import AddProduct from './components/AddProduct';
 import Nav from './components/Nav';
 import { useState } from 'react';
+import Letter from './components/Letter';
+import Footer from './components/Footer';
 
 function App() {
 
@@ -22,19 +24,24 @@ function App() {
 
   return (
     <>
-      <Nav isAdminLoggedIn={isAdminLoggedIn} />
+      <Nav 
+        isAdminLoggedIn={isAdminLoggedIn} 
+        setIsProductFormActive={setIsProductFormActive}
+      />
       {isAdminLoggedIn && isProductFormActive && 
         <AddProduct 
           onClose={onClose} 
           selectedId={selectedId} 
         />}
-      {isAdminLoggedIn && <div className="my-5 ml-2">
-        <button onClick={() => setIsProductFormActive(true)} className="px-2 py-1 rounded bg-green-500 text-white">Neues Produkt hinzufügen</button>
-      </div>}
+      
+      <div className="text-[#ddd] bg-gradient-to-b from-[#606888] to-[#3f4a6b] py-10">
+        <Letter />
+      </div>
       <ProductTable
         onEditHandler={onEditHandler}
         isAdminLoggedIn={isAdminLoggedIn}
       />
+      <Footer />
     </>
   )
 }
